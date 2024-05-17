@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>급식먹자</title>
+    <script>
+        function startMeal(id) {
+            fetch(`/start/${id}`, {
+                method: 'POST'
+            })
+            .then(response => response.text())
+            .then(message => {
+                const currentTime = new Date();
+                const timeString = currentTime.getHours() + ':' + currentTime.getMinutes() + ':' + currentTime.getSeconds();
+                document.getElementById('time' + id).innerText = timeString;
+            })
+            .catch(error => console.error('Error:', error));
+        }
+
+        function cancelMeal(id) {
+            fetch(`/cancel/${id}`, {
+                method: 'POST'
+            })
+            .then(response => response.text())
+            .then(message => {
+                document.getElementById('time' + id).innerText = '';
+            })
+            .catch(error => console.error('Error:', error));
+        }
+      document.addEventListener('DOMContentLoaded', function() {
+    fetch('/times')
+    .then(response => response.json())
+    .then(data => {
+        for (const id in data) {
+            const timeElement = document.getElementById('time' + id);
+            if (timeElement) {
+                timeElement.innerText = data[id];
+            }
+        }
+    })})
+    .catch(error => console.error('Error:', error));  
+    </script>
+    <style>
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(200px, 1fr)); /* 각 구역의 최소 너비를 200px로 설정 */
+            gap: 20px;
+            max-width: 1000px; /* 최대 너비 설정 */
+            margin: 0 auto; /* 가운데 정렬 */
+            /*overflow-x: auto; /* 가로 스크롤을 사용할 때만 스크롤이 나타나도록 설정 */
+}
+
+.section {
+           border: 1px solid #000;
+           padding: 20px;
+           text-align: center;
+           position: relative;
+           min-width: 200px; /* 최소 너비를 지정하여 반의 각 구역이 가로로 넓어지도록 설정 */
+}
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 10px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .time {
+            font-size: 16px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    
+    <center>
+    <h1>급식먹자</h1>
+</center>
+<div class="grid-container">
+    <div class="section">
+        <h2>1반</h2>
+        <div id="time1" class="time"></div>
+        <button class="btn" onclick="startMeal(1)">출발</button>
+        <button class="btn" onclick="cancelMeal(1)">취소</button>
+    </div>
+    <div class="section">
+        <h2>2반</h2>
+        <div id="time2" class="time"></div>
+        <button class="btn" onclick="startMeal(2)">출발</button>
+        <button class="btn" onclick="cancelMeal(2)">취소</button>
+    </div>
+    <div class="section">
+        <h2>3반</h2>
+        <div id="time3" class="time"></div>
+        <button class="btn" onclick="startMeal(3)">출발</button>
+        <button class="btn" onclick="cancelMeal(3)">취소</button>
+    </div>
+    <div class="section">
+        <h2>4반</h2>
+        <div id="time4" class="time"></div>
+        <button class="btn" onclick="startMeal(4)">출발</button>
+        <button class="btn" onclick="cancelMeal(4)">취소</button>
+    </div>
+    <div class="section">
+        <h2>5반</h2>
+        <div id="time5" class="time"></div>
+        <button class="btn" onclick="startMeal(5)">출발</button>
+        <button class="btn" onclick="cancelMeal(5)">취소</button>
+    </div>
+    <div class="section">
+        <h2>6반</h2>
+        <div id="time6" class="time"></div>
+        <button class="btn" onclick="startMeal(6)">출발</button>
+        <button class="btn" onclick="cancelMeal(6)">취소</button>
+    </div>
+    <div class="section">
+        <h2>7반</h2>
+        <div id="time7" class="time"></div>
+        <button class="btn" onclick="startMeal(7)">출발</button>
+        <button class="btn" onclick="cancelMeal(7)">취소</button>
+    </div>
+    <div class="section">
+        <h2>8반</h2>
+        <div id="time8" class="time"></div>
+        <button class="btn" onclick="startMeal(8)">출발</button>
+        <button class="btn" onclick="cancelMeal(8)">취소</button>
+    </div>
+    <div class="section">
+        <h2>9반</h2>
+        <div id="time9" class="time"></div>
+        <button class="btn" onclick="startMeal(9)">출발</button>
+        <button class="btn" onclick="cancelMeal(9)">취소</button>
+    </div>
+    <div class="section">
+        <h2>10반</h2>
+        <div id="time10" class="time"></div>
+        <button class="btn" onclick="startMeal(10)">출발</button>
+        <button class="btn" onclick="cancelMeal(10)">취소</button>
+    </div>
+    <div class="section">
+        <h2>11반</h2>
+        <div id="time11" class="time"></div>
+        <button class="btn" onclick="startMeal(11)">출발</button>
+        <button class="btn" onclick="cancelMeal(11)">취소</button>
+    </div>
+</div>
+
+</body>
+</html>
