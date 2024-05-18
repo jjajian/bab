@@ -4,43 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>급식먹자</title>
-    <script>
-        function startMeal(id) {
-            fetch(`/start/${id}`, {
-                method: 'POST'
-            })
-            .then(response => response.text())
-            .then(message => {
-                const currentTime = new Date();
-                const timeString = currentTime.getHours() + ':' + currentTime.getMinutes() + ':' + currentTime.getSeconds();
-                document.getElementById('time' + id).innerText = timeString;
-            })
-            .catch(error => console.error('Error:', error));
-        }
-
-        function cancelMeal(id) {
-            fetch(`/cancel/${id}`, {
-                method: 'POST'
-            })
-            .then(response => response.text())
-            .then(message => {
-                document.getElementById('time' + id).innerText = '';
-            })
-            .catch(error => console.error('Error:', error));
-        }
-      document.addEventListener('DOMContentLoaded', function() {
-    fetch('/times')
-    .then(response => response.json())
-    .then(data => {
-        for (const id in data) {
-            const timeElement = document.getElementById('time' + id);
-            if (timeElement) {
-                timeElement.innerText = data[id];
-            }
-        }
-    })})
-    .catch(error => console.error('Error:', error));  
-    </script>
+    
     <style>
         .grid-container {
             display: grid;
@@ -147,6 +111,46 @@
         <button class="btn" onclick="cancelMeal(11)">취소</button>
     </div>
 </div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.1.2/socket.io.js"></script>
+    <script>
+      const socket = io();
 
+// 서버로부터 시간 업데이트를 받아서 처리
+socket.on('timeUpdate', (data) => {
+    document.getElementById('currentTime').innerText = data.time;
+});
+
+// 출발 버튼 클릭 시 서버로 getTime 이벤트를 전송
+function startMeal(id) {
+    fetch(`/start/${id}`, {
+                method: 'POST'
+            })
+
+            .then(response => response.text())
+            .then(message => {
+                const currentTime = new Date();
+                const timeString = currentTime.getHours() + ':' + currentTime.getMinutes() + ':' + currentTime.getSeconds();
+                document.getElementById('time' + id).innerText = timeString;
+            })
+            .catch(error => console.error('Error:', error));
+
+    socket.emit('startTime', { time: timeString });
+    
+}
+
+  // 취소 버튼 클릭 시 서버로 cancelTime 이벤트를 전송
+  function cancelMeal(id) {
+    fetch(`/cancel/${id}`, {
+                method: 'POST'
+            })
+            .then(response => response.text())
+            .then(message => {
+                document.getElementById('time' + id).innerText = '';
+            })
+            .catch(error => console.error('Error:', error));
+
+            socket.emit('cancelTime');
+        }
+    </script>
 </body>
 </html>
