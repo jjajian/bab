@@ -4,43 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>급식먹자</title>
-    <script>
-        function startMeal(id) {
-            fetch(`/start/${id}`, {
-                method: 'POST'
-            })
-            .then(response => response.text())
-            .then(message => {
-                const currentTime = new Date();
-                const timeString = currentTime.getHours() + ':' + currentTime.getMinutes() + ':' + currentTime.getSeconds();
-                document.getElementById('time' + id).innerText = timeString;
-            })
-            .catch(error => console.error('Error:', error));
-        }
-
-        function cancelMeal(id) {
-            fetch(`/cancel/${id}`, {
-                method: 'POST'
-            })
-            .then(response => response.text())
-            .then(message => {
-                document.getElementById('time' + id).innerText = '';
-            })
-            .catch(error => console.error('Error:', error));
-        }
-      document.addEventListener('DOMContentLoaded', function() {
-    fetch('/times')
-    .then(response => response.json())
-    .then(data => {
-        for (const id in data) {
-            const timeElement = document.getElementById('time' + id);
-            if (timeElement) {
-                timeElement.innerText = data[id];
-            }
-        }
-    })})
-    .catch(error => console.error('Error:', error));  
-    </script>
+    
     <style>
         .grid-container {
             display: grid;
@@ -146,7 +110,44 @@
         <button class="btn" onclick="startMeal(11)">출발</button>
         <button class="btn" onclick="cancelMeal(11)">취소</button>
     </div>
+    
 </div>
+<script src="/socket.io/socket.io.js"></script>
+
+<script>
+    const socket = io();
+
+    function startMeal(classId) {
+        socket.emit('startMeal', classId);
+    }
+
+    function cancelMeal(classId) {
+        socket.emit('cancelMeal', classId);
+    }
+
+    socket.on('timeUpdated', (data) => {
+        const { classId, currentTime } = data;
+        document.getElementById(`time${classId}`).textContent = currentTime;
+        // Local Storage에 시간 저장
+        if (currentTime) {
+            localStorage.setItem(`Time${classId}`, currentTime);
+        } else {
+            localStorage.removeItem(`Time${classId}`);
+        }
+    });
+
+    window.onload = () => {
+        // 페이지 로드 시 Local Storage에서 시간 복원
+        [...Array(11).keys()].forEach(classId => {
+            const savedTime = localStorage.getItem(`classTime${classId + 1}`);
+            if (savedTime) {
+                document.getElementById(`time${classId + 1}`).textContent = savedTime;
+            }
+        });
+    };
+</script>
 
 </body>
 </html>
+
+
